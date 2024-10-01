@@ -1,7 +1,7 @@
 # This is a program to calculate the Faraday Polarization Rotation. We will focuse o the Verdet Constant of Rb vapor.
 import numpy as np
 import matplotlib.pyplot as plt
-
+import math
 
 def  ATCTS_schulick(Atom,p,n,start):
     '''
@@ -107,15 +107,31 @@ def ATCTS_naqvi(Atom, p, n, start):
     return p
 
 
-# Initialize variables for Rubidium (Rb)
-Atom = 'RB'  # Focus on Rubidium
-p = np.zeros(17)  # Array to store results, size 17 since p[0] to p[16] are used
-n = 2 # Index for Rb085 (set to 1 for the first isotope)
-start = 0  # First call
+def lgn(n):
+    '''
+    The purpose of this function is to compute the natural logarithm of the factorial of n.
+    
+    Parameter(s):
+    n: Integer > 0.
+    '''
+    
+    if n <0:
+        raise ValueError("The input must be a positive integer.")
+    
+    return math.lgamma(n+1)
 
-# Call the function
-p_result = ATCTS_naqvi(Atom, p, n, start)
 
-# Output the result
-print("Computed Constants (p array):")
-print(p_result)
+import math
+
+def lgn_stirling(n):
+    if n <= 0:
+        raise ValueError("n must be a positive integer greater than 0.")    
+    # Stirling's approximation formula: ln(n!) ≈ n*ln(n) - n + 0.5*ln(2*pi*n)
+    return n * math.log(n) - n + 0.5 * math.log(2 * math.pi * n)
+
+# Example with large n
+n_large = 10000
+result_stirling = lgn_stirling(n_large)
+result_gamma = lgn(n_large)
+print(f"ln({n_large}!) using Stirling's approximation = {result_stirling}")
+print(f"ln({n_large}!) using Gamma approximation = {result_gamma}")
