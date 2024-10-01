@@ -120,9 +120,6 @@ def lgn(n):
     
     return math.lgamma(n+1)
 
-
-import math
-
 def lgn_stirling(n):
     if n <= 0:
         raise ValueError("n must be a positive integer greater than 0.")    
