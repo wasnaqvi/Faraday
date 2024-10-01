@@ -110,7 +110,7 @@ def ATCTS_2(Atom, p, n, start):
 # Initialize variables for Rubidium (Rb)
 Atom = 'RB'  # Focus on Rubidium
 p = np.zeros(17)  # Array to store results, size 17 since p[0] to p[16] are used
-n = 1 # Index for Rb085 (set to 1 for the first isotope)
+n = 2 # Index for Rb085 (set to 1 for the first isotope)
 start = 0  # First call
 
 # Call the function
