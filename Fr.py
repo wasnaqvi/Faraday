@@ -72,9 +72,7 @@ def ATCTS_naqvi(Atom, p, n, start):
     FT = 1.499e9
     Label = ['LI006', 'LI007', 'NA023', 'K039', 'K041', 'RB085', 'RB087', 'CS133']
 
-    # Reset n if this is the first call
-    if start == 1:
-        n = 0
+  
 
     # Find the correct isotope based on Atom string
     isotope_found = False
@@ -106,6 +104,16 @@ def ATCTS_naqvi(Atom, p, n, start):
     print(f"ATCTS was called for {Atom} with isotope index {n}.")
     return p
 
+Atom = 'LI'  # Lithium
+p = np.zeros(17)  # Array to store results
+n = 2 # Select the second isotope (Li007)
+start = 1  # First time calling
+
+# Call the function for Li007
+p_result_li007 = ATCTS_naqvi(Atom, p, n, start)
+print("Results for Li007:")
+print(p_result_li007)
+
 
 def lgn(n):
     '''
@@ -125,10 +133,11 @@ def lgn_stirling(n):
         raise ValueError("n must be a positive integer greater than 0.")    
     # Stirling's approximation formula: ln(n!) ≈ n*ln(n) - n + 0.5*ln(2*pi*n)
     return n * math.log(n) - n + 0.5 * math.log(2 * math.pi * n)
-
+'''
 # Example with large n
 n_large = 10000
 result_stirling = lgn_stirling(n_large)
 result_gamma = lgn(n_large)
 print(f"ln({n_large}!) using Stirling's approximation = {result_stirling}")
 print(f"ln({n_large}!) using Gamma approximation = {result_gamma}")
+'''
