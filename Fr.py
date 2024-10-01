@@ -49,7 +49,7 @@ def  ATCTS_schulick(Atom,p,n,start):
     print("ATCTS was called")
     return p
 
-def ATCTS_2(Atom, p, n, start):
+def ATCTS_naqvi(Atom, p, n, start):
     '''
     Atom: Character string designating the atomic symbol
     P: Real Linear array to store atomic constants upon return
@@ -114,7 +114,7 @@ n = 2 # Index for Rb085 (set to 1 for the first isotope)
 start = 0  # First call
 
 # Call the function
-p_result = ATCTS_2(Atom, p, n, start)
+p_result = ATCTS_naqvi(Atom, p, n, start)
 
 # Output the result
 print("Computed Constants (p array):")
