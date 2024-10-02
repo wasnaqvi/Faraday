@@ -161,3 +161,17 @@ def THJ(J1, J2, J3, M1, M2, M3):
     return float(wigner_3j(J1, J2, J3, M1, M2, M3))
 
 print(THJ(2, 6, 4, 0, 0, 0))
+
+def Matrix(nh,H,p,nl,nu):
+    '''
+    The purpose of this function is to compute the matrix elements of the Atomic Hamiltonian.
+    
+    Parameters:
+    nh: Declared row dimension of H.
+    H: Matrix to store the results upon return.
+    P: Linear array containing parameters values(atomic constants).
+    NL: Integer equal to the lower position of Array LB for block MJ+MI.
+    NU: Integer equal to the upper position of Array LB for block MJ+MI.
+    '''
+    BN = 2.542e-5
+    
