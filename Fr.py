@@ -2,6 +2,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import scipy 
+from sympy.physics.wigner import wigner_3j
+
+# 
 
 def  ATCTS_schulick(Atom,p,n,start):
     '''
@@ -142,76 +146,18 @@ print(f"ln({n_large}!) using Stirling's approximation = {result_stirling}")
 print(f"ln({n_large}!) using Gamma approximation = {result_gamma}")
 '''
 
-def THJ(j1,j2,j3,m1,m2,m3):
-    z=[]
+def THJ(J1, J2, J3, M1, M2, M3):
     '''
-    The purpose of this function is to compute the Wigner 3j symbol.
+    The purpose of this function is to compute the 3j symbol.
+    
     Parameters:
-    j1,j2,j3: Integer or half-integer values
-    m1,m2,m3: Integer values
-    **Note all values must be real.
-    
-    We need the lgn function here.
+    J1, J2, J3: Integers or half-integers.
+    M1, M2, M3: Integers or half-integers.
     '''
-    W=0
-    # Test for Non-zero 3J value.
     
-    if (j1<0) or (j2<0) or (j3<0) or (j1+j2+j3!=0) or (m1+m2+m3!=0):
-        raise ValueError("Invalid values for j1,j2,j3")
-    # Projections must be either integers or half-integers
-    F = 2*m1
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for m1")
-    F = 2*m2
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for m2")
-    F = 2*m3
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for m3")
-    # Compute the 3J symbol
-    F =m1+m2+m3
-    if F!=0:
-        raise ValueError("Invalid values for m1,m2,m3")
-    # j+m must be an integer and abs(m)<=j
-    F = j1+m1
-    if (F-int(F))!=0 or abs(m1)>j1:
-        raise ValueError("Invalid values for j1,m1")
-    F = j2+m2
-    if (F-int(F))!=0 or abs(m2)>j2:
-        raise ValueError("Invalid values for j2,m2")
-    F = j3+m3
-    if (F-int(F))!=0 or abs(m3)>j3:
-        raise ValueError("Invalid values for j3,m3")
-    # The Triangular conditions involving j1,j2,j3 must be satisfied
-    # J1, J2, J3 must be integers or half-integers
-    F = 2*j1
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for j1")
-    F = 2*j2
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for j2")
-    F = 2*j3
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for j3")
+    if (J1 < 0) or (J2 < 0) or (J3 < 0) or (M1 < 0) or (M2 < 0) or (M3 < 0):
+        raise ValueError("The input must be a positive integer or half-integer.")
     
-    # J1+J2+J3 must be an integer
-    F = j1+j2+j3
-    if (F-int(F))!=0:
-        raise ValueError("Invalid values for j1,j2,j3")
-    # Test on triangular conditions
-    if (j1+j2<j3) or (j1-j2>j3) or (-j1+j2>j3):
-        raise ValueError("Triangular conditions not satisfied")
-    # Calculate the value of the triad.
-    N = j1+j2-j3
-    z.append(lgn(N))
-    N = j1-j2+j3
-    z[0]+=lgn(N)
-    N = -j1+j2+j3
-    z[0]+=lgn(N)
-    N = j1+j2+j3+1
-    z[0]-=lgn(N)
-    
-    # Wigner 3J symbol
-    
-    
-    
+    return float(wigner_3j(J1, J2, J3, M1, M2, M3))
+
+print(THJ(2, 6, 4, 0, 0, 0))
