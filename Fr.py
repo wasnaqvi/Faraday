@@ -72,33 +72,6 @@ print("Results for Li007:")
 print(p_result_li007)
 
 
-def lgn(n):
-    '''
-    The purpose of this function is to compute the natural logarithm of the factorial of n.
-    
-    Parameter(s):
-    n: Integer > 0.
-    '''
-    
-    if n <0:
-        raise ValueError("The input must be a positive integer.")
-    
-    return math.lgamma(n+1)
-
-def lgn_stirling(n):
-    if n <= 0:
-        raise ValueError("n must be a positive integer greater than 0.")    
-    # Stirling's approximation formula: ln(n!) ≈ n*ln(n) - n + 0.5*ln(2*pi*n)
-    return n * math.log(n) - n + 0.5 * math.log(2 * math.pi * n)
-'''
-# Example with large n
-n_large = 10000
-result_stirling = lgn_stirling(n_large)
-result_gamma = lgn(n_large)
-print(f"ln({n_large}!) using Stirling's approximation = {result_stirling}")
-print(f"ln({n_large}!) using Gamma approximation = {result_gamma}")
-'''
-
 def THJ(J1, J2, J3, M1, M2, M3):
     '''
     The purpose of this function is to compute the 3j symbol.
@@ -317,17 +290,14 @@ def test_Matrix():
     H = np.zeros((nh, nh))
 
     # Sample atomic constants (randomized for testing, modify as needed)
-    p = [
-        1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 
-        10.0, 11.0, 12.0, 13.0
-    ]
+    p = p_result_li007
 
     # Set the lower and upper bounds
     nl = 1
     nu = 3
 
     # Call the Matrix function with the test inputs
-    H_result = Matrix(nh, H, p, nl, nu)
+    H_result = Matrix2(nh, H, p, nl, nu)
 
     # Print the result for inspection
     print("Resulting Matrix H:")
