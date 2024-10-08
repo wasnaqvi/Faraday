@@ -133,7 +133,7 @@ def Matrix(nh,H,p,nl,nu):
          for J in range(nl, nu+1):
                IC = J - nl + 1
         # Simulating DECODE(16, 2, LB(J))(1:16) - Split and parse string
-               QJ = [float(LB[J][j:j+4]) for j in range(0, 16, 4)]
+               QJ = [int(LB[J][j:j+4]) for j in range(0, 16, 4)]
                ICD=QJ[0]+QJ[1]+0.5
         
                H[IR-1, IC-1] = 0.0
@@ -193,7 +193,7 @@ def Matrix(nh,H,p,nl,nu):
     
     return H
 
-    
+    # Matrix2 is basically the same code as Matrix 1, but I am trying to debug and test it.
 def Matrix2(nh, H, p, nl, nu):
     '''
     The purpose of this function is to compute the matrix elements of the Atomic Hamiltonian.
@@ -218,7 +218,7 @@ def Matrix2(nh, H, p, nl, nu):
     ])
 
     NLB = 0  
-    LB = [""] * 136  
+    LB = [] * 136  
 
     W[3] = np.sqrt(0.2 * p[8] * (p[8] + 1) * (2.0 * p[8] + 1.0))
     W[4] = (2.0 * p[8] + 3.0) / (p[8] * (2.0 * p[8] - 1.0))
@@ -229,7 +229,7 @@ def Matrix2(nh, H, p, nl, nu):
         IR = I - nl + 1
 
         # Simulating DECODE(16, 2, LB(I))(1:16) - Split and parse string
-        QI = [float(LB[I][j:j+4]) for j in range(0, 16, 4)]
+        QI = [int(LB[I][j:j+4]) for j in range(0, 16, 4)]
         IRD = QI[0] + QI[1] + 0.5
 
         for J in range(nl, nu+1):
