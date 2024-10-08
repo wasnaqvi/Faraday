@@ -169,8 +169,12 @@ def Matrix(nh,H,p,nl,nu):
     if (I!=J):
          #  Electronic Zeeman
         W[0]=THJ(QI[0], 1.0, QJ[1], -QI[2],QI[2]-QJ[2], QJ[2])  # Wigner 3j symbol.
-        if(QI[3] != QJ[3]):
+    if(QI[3] != QJ[3]):
             W[1] = THJ(QI[4], 1.0, QI[4], -QI[4], QI[4] - QJ[4], QJ[4]) * np.sqrt(2.0)
+    if QI[0]==0 : 
+        H[IR-1, IR-1]=p[5]
+    if QI[0]==1:
+        H[IR-1, IR-1]=p[0]         
     N=QI[2]-0.5
     W[2]=W[0]
     if(N%2 != 0):
@@ -183,7 +187,42 @@ def Matrix(nh,H,p,nl,nu):
     if(N%2 != 0):
         W[2] = -W[2]
     W[2] = W[2] * R[IRD-1, ICD-1, 1]
-    if    
+    if QI ==0:
+        H[IR-1, IC-1] += p[6] * W[2]
+    if QI[0] == 1 and QI[1] == QJ[1]:
+        H[IR-1, IC-1] += p[2]+2*(B-1)*p[3]*W[2] # What is B? 
+    if QI[0] == 1 and QI[1] != QJ[1]:
+        H[IR-1, IC-1] += p[3]*W[2]
+    
+    # Electric Quadrupole section
+    W[0] = THJ(QI[1], 2.0, QJ[1], -QI[2], QI[2] - QJ[2], QJ[2])
+    W[2] = THJ(QI[4], 2.0, QJ[4], -QI[3], QI[3] - QJ[3], QJ[3])
+    W[0] *= W[2] * W[3]
+    N=QI[4]-QI[3]-QJ[1]+0.5
+    if(N%2 != 0):
+        W[0] = -W[0]
+    H[IR-1, IC-1] += p[4] * W[0] * R[IRD-1, ICD-1, 2]
+    
+    # Nuclear Zeeman Interaction
+    
+    # Nuclear Zeeman section
+    if QI[1] != QJ[1] or QI[2] != QJ[2]:
+            # Set lower triangular half equal to upper triangular half
+            if I != J:
+                 H[IC-1, IR-1] = H[IR-1, IC-1]
+
+    W[0] = W[1] * W[3] / p[8]
+    N = QI[4] - QI[3] + 1
+    if int(N) % 2 != 0:
+         W[0] = -W[0]
+
+    H[IR-1, IC-1] += p[7] + p[11] * BN * W[0]
+    
+    return H
+
+    
+    
+   
             
             
         
