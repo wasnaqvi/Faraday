@@ -5,53 +5,6 @@ import math
 import scipy 
 from sympy.physics.wigner import wigner_3j
 
-# 
-
-def  ATCTS_schulick(Atom,p,n,start):
-    '''
-    Atom character string designating th atomic symbol
-    P Real Lineary array to store atomic constants upon return
-    N Integer Equal to the Index of Isotope to be used
-    start Integer Equal to 1 if the first time the function is called. False for calls thereafter for the same atom
-    '''
-     # Create a 12x8 zero matrix
-    C = np.zeros((12, 8))
-    
-    # Fill column 1 (index 0 in Python)
-    C[0:12, 0] = [14903.89, 0.2235559, 1.6918e-4, -1.2882e-4, -3.686e-7, 0, 0.0050707, 0.82203, 1, 26.4, 26.4, 0.742]
-    C[0:12, 1] = [14903.89, 0.2235559, 4.467e-4, -3.4017e-4, -1.843e-5, 0, 0.0134, 3.256, 1.5, 26.4, 26.4, 0.9258]
-    C[0:12, 2] = [16967.647, 11.464, 1.177e-3, -5.837e-6, 2.35e-4, 0, 2.95475e-2, 2.217, 1.5, 16, 16, 1]
-    C[0:12, 3] = [13023.65, 38.48, 3.642e-4, 8.895e-6, 2.31e-4, 0, 7.70065e-3, 0.3914, 1.5, 26, 26, 0.932]
-    C[0:12, 4] = [13023.65, 38.48, 2.004e-4, 4.894e-6, 2.82e-4, 0, 4.236e-3, 0.21487, 1.5, 26, 26, 0.0688]
-    C[0:12, 5] = [12737.36, 158.4, 1.525e-3, 2.496e-5, 2.0864e-3, 0, 0.03375, 1.3524, 2.5, 25.5, 28.1, 0.7215]
-    C[0:12, 6] = [12737.36, 158.4, 5.149e-3, 8.428e-5, 1.0432e-3, 0, 0.11399, 2.75, 1.5, 25.5, 28.1, 0.2785]
-    C[0:12, 7] = [11547.65, 369.41, 3.5692e-3, -2.254e-4, -3.2e-5, 0, 0.07665, 2.57790, 3.5, 29.9, 34.0, 1]
-
-    FT=1.499e9
-    Label=['LI006','LI007','NA023','K039','K041','RB085','RB087','CS133']
-      
-    j,k=0,0
-    for i in range(0,8):
-        if Atom!=Label[i][0]:
-            continue
-        j+=1
-        k=i
-    
-    k-=j
-    if n<j:
-        n+=1
-    k+=n
-    for i in range(11):
-        p[i]=C[i,k]
-    
-    p[12] = np.sqrt(FT / (p[0] - p[1]) ** 3 / p[10])
-    p[13] = np.sqrt(2.0 * FT / (p[0] + 0.5 * p[1]) ** 3 / p[9])
-    p[14] = FT / (p[0] - p[1]) ** 2 / p[10]
-    p[15] = 2.0 * FT / (p[0] + 0.5 * p[1]) ** 2 / p[9]
-    p[16] = C[11, k]
-    
-    print("ATCTS was called")
-    return p
 
 def ATCTS_naqvi(Atom, p, n, start):
     '''
@@ -173,5 +126,65 @@ def Matrix(nh,H,p,nl,nu):
     NL: Integer equal to the lower position of Array LB for block MJ+MI.
     NU: Integer equal to the upper position of Array LB for block MJ+MI.
     '''
+    W = np.zeros(5)
     BN = 2.542e-5
+    QI=np.zeros(5)
+    QJ=np.zeros(4)
+    R = np.array([
+    [1.14490551520957E-01, 0.00000000000000E+00, 0.00000000000000E+00],
+    [0.00000000000000E+00, 5.7735026918962577E-01, -5.43383832291511E-02],
+    [-2.40202829036970E-01, 0.00000000000000E+00, 1.20474871391589E-02],
+    [5.7735026918962577E-01, 3.2655980232371094E-01, 5.7735026918962577E-01],
+    [-2.412275077709000E-01, 1.020448713915E-02, -5.403883822915E-02]])
+  
+    NLB = 0  
+    LB = [""] * 136  
+
     
+    W[3] = np.sqrt(0.2 * p[8] * (p[8] + 1) * (2.0 * p[8] + 1.0))
+    W[4] *= (2.0 * p[8] + 3.0) / (p[8] * (2.0 * p[8] - 1.0))
+
+    ''' Calculating the Hamiltonian Matrix For Block MJ+MI '''
+    
+    
+    
+    for I in range(nu, nl+1):
+         IR = I - nl + 1
+
+    # Simulating DECODE(16, 2, LB(I))(1:16) - Split and parse string
+         QI = [float(LB[I][j:j+4]) for j in range(0, 16, 4)]
+    
+         IRD = QI[0] + QI[1] + 0.5
+
+    # Loop over J from NL to NU
+         for J in range(nl, nu+1):
+               IC = J - nl + 1
+        # Simulating DECODE(16, 2, LB(J))(1:16) - Split and parse string
+               QJ = [float(LB[J][j:j+4]) for j in range(0, 16, 4)]
+               ICD=QJ[0]+QJ[1]+0.5
+        
+               H[IR-1, IC-1] = 0.0
+               
+    # Spin Orbit Interaction
+    if (I!=J):
+         #  Electronic Zeeman
+        W[0]=THJ(QI[0], 1.0, QJ[1], -QI[2],QI[2]-QJ[2], QJ[2])  # Wigner 3j symbol.
+        if(QI[3] != QJ[3]):
+            W[1] = THJ(QI[4], 1.0, QI[4], -QI[4], QI[4] - QJ[4], QJ[4]) * np.sqrt(2.0)
+    N=QI[2]-0.5
+    W[2]=W[0]
+    if(N%2 != 0):
+        W[2] = -W[2]
+    H[IR-1, IC-1] = H[IR-1, IC-1] + p[12] * W[2] * R[IRD,ICD-1, 1]  
+    
+    # Nuclear Hyperfine Interaction
+    W[2]=W[0]*W[1]*W[3]
+    N=QI[4]-QI[3]-QJ[1]+0.5
+    if(N%2 != 0):
+        W[2] = -W[2]
+    W[2] = W[2] * R[IRD-1, ICD-1, 1]
+    if    
+            
+            
+        
+
