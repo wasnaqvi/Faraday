@@ -221,7 +221,128 @@ def Matrix(nh,H,p,nl,nu):
     return H
 
     
+def Matrix2(nh, H, p, nl, nu):
+    '''
+    The purpose of this function is to compute the matrix elements of the Atomic Hamiltonian.
     
+    Parameters:
+    nh: Declared row dimension of H.
+    H: Matrix to store the results upon return.
+    P: Linear array containing parameters values (atomic constants).
+    NL: Integer equal to the lower position of Array LB for block MJ+MI.
+    NU: Integer equal to the upper position of Array LB for block MJ+MI.
+    '''
+    W = np.zeros(5)
+    BN = 2.542e-5
+    QI = np.zeros(5)
+    QJ = np.zeros(4)
+    R = np.array([
+        [1.14490551520957E-01, 0.00000000000000E+00, 0.00000000000000E+00],
+        [0.00000000000000E+00, 5.7735026918962577E-01, -5.43383832291511E-02],
+        [-2.40202829036970E-01, 0.00000000000000E+00, 1.20474871391589E-02],
+        [5.7735026918962577E-01, 3.2655980232371094E-01, 5.7735026918962577E-01],
+        [-2.412275077709000E-01, 1.020448713915E-02, -5.403883822915E-02]
+    ])
+
+    NLB = 0  
+    LB = [""] * 136  
+
+    W[3] = np.sqrt(0.2 * p[8] * (p[8] + 1) * (2.0 * p[8] + 1.0))
+    W[4] = (2.0 * p[8] + 3.0) / (p[8] * (2.0 * p[8] - 1.0))
+
+    ''' Calculating the Hamiltonian Matrix For Block MJ+MI '''
+    
+    for I in range(nl, nu+1):
+        IR = I - nl + 1
+
+        # Simulating DECODE(16, 2, LB(I))(1:16) - Split and parse string
+        QI = [float(LB[I][j:j+4]) for j in range(0, 16, 4)]
+        IRD = QI[0] + QI[1] + 0.5
+
+        for J in range(nl, nu+1):
+            IC = J - nl + 1
+            QJ = [float(LB[J][j:j+4]) for j in range(0, 16, 4)]
+            ICD = QJ[0] + QJ[1] + 0.5
+        
+            H[IR-1, IC-1] = 0.0
+
+            if I != J:
+                # Spin-Orbit Interaction and Electronic Zeeman
+                W[0] = THJ(QI[0], 1.0, QJ[1], -QI[2], QI[2] - QJ[2], QJ[2])
+                if QI[3] != QJ[3]:
+                    W[1] = THJ(QI[4], 1.0, QI[4], -QI[4], QI[4] - QJ[4], QJ[4]) * np.sqrt(2.0)
+
+                N = QI[2] - 0.5
+                W[2] = W[0]
+                if int(N) % 2 != 0:
+                    W[2] = -W[2]
+                H[IR-1, IC-1] += p[12] * W[2] * R[IRD-1, ICD-1, 1]
+
+                # Nuclear Hyperfine Interaction
+                W[2] = W[0] * W[1] * W[3]
+                N = QI[4] - QI[3] - QJ[1] + 0.5
+                if int(N) % 2 != 0:
+                    W[2] = -W[2]
+                H[IR-1, IC-1] += p[6] * W[2] * R[IRD-1, ICD-1, 1]
+
+                if QI[0] == 0:
+                    H[IR-1, IC-1] += p[6] * W[2]
+                elif QI[0] == 1 and QI[1] == QJ[1]:
+                    H[IR-1, IC-1] += p[2] + 2 * (B - 1) * p[3] * W[2]  # B needs to be defined
+                elif QI[0] == 1 and QI[1] != QJ[1]:
+                    H[IR-1, IC-1] += p[3] * W[2]
+
+                # Electric Quadrupole section
+                W[0] = THJ(QI[1], 2.0, QJ[1], -QI[2], QI[2] - QJ[2], QJ[2])
+                W[2] = THJ(QI[4], 2.0, QJ[4], -QI[3], QI[3] - QJ[3], QJ[3])
+                W[0] *= W[2] * W[3]
+                H[IR-1, IC-1] += p[4] * W[0] * R[IRD-1, ICD-1, 2]
+
+                # Nuclear Zeeman Interaction
+                if QI[1] != QJ[1] or QI[2] != QJ[2]:
+                    H[IC-1, IR-1] = H[IR-1, IC-1]
+
+                W[0] = W[1] * W[3] / p[8]
+                N = QI[4] - QI[3] + 1
+                if int(N) % 2 != 0:
+                    W[0] = -W[0]
+
+                H[IR-1, IC-1] += p[7] + p[11] * BN * W[0]
+
+    return H
+   
+def test_Matrix():
+    # Example small matrix H (3x3) to test the function
+    nh = 3
+    H = np.zeros((nh, nh))
+
+    # Sample atomic constants (randomized for testing, modify as needed)
+    p = [
+        1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 
+        10.0, 11.0, 12.0, 13.0
+    ]
+
+    # Set the lower and upper bounds
+    nl = 1
+    nu = 3
+
+    # Call the Matrix function with the test inputs
+    H_result = Matrix(nh, H, p, nl, nu)
+
+    # Print the result for inspection
+    print("Resulting Matrix H:")
+    print(H_result)
+
+    # You can also add assertions for automated testing, for example:
+    assert H_result.shape == (nh, nh), "Matrix dimensions do not match"
+    assert np.all(H_result >= 0), "Matrix should not contain negative values in this test"
+    
+    print("Test passed!")
+
+
+# Run the test function
+test_Matrix()
+
    
             
             
