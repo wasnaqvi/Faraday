@@ -110,7 +110,7 @@ def level(p, nd, scratch):
         # nl is the lower position, and nu is the upper position
 
         # Diagonalize the MJ + MI block
-        nh,h=Matrix(nh, h, p, nl, nu)
+        nh,h=Matrix(8, h, p, nl, nu)
         print(f'H: {h}')
 
         d, u = jacobi_rotation(h)
@@ -121,7 +121,8 @@ def level(p, nd, scratch):
             # Transition matrix in the initial basis
             for j in range(nls, nus + 1):
                 ir = j - nls+1
-                qi = list(map(float, lb[j - 1][0:16].split()))  # Assuming lb is a list of strings
+                qi = list(map(float, lb[j - 1][0:16].split())) # Assuming lb is a list of strings
+                print(f'qi: {qi}')
                 for k in range(nl, nu + 1):
                     ic = k - nl +1
                     qj = list(map(float, lb[k - 1][0:16].split()))
