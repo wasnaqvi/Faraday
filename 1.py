@@ -48,6 +48,7 @@ def atomic_constant(Atom, p, n, start):
         return p
 
     # Fill the array `p` with constants from matrix `C`
+    
     for i in range(11):
         p[i] = C[i, k]
 
@@ -77,8 +78,6 @@ def level(p, nd, scratch):
     w = np.zeros((8, 9))  # Initialize w matrix
     h = np.zeros((8, 8))  # Initialize h matrix, hamiltonian matrix
     index = np.zeros(8, dtype=int)  # Initialize index
-
-    global nlb, lb
 
     nh=8 # how many levels (except zeeman splitting) in total including upper and lower level 2S1/3 2P1/2, 2P3/2
 
@@ -112,7 +111,7 @@ def level(p, nd, scratch):
 
         # Diagonalize the MJ + MI block
         nh,h=Matrix(nh, h, p, nl, nu)
-       # print(f'H: {h}')
+        print(f'H: {h}')
 
         d, u = jacobi_rotation(h)
         print(f'eigenvalues: {d}')
@@ -144,7 +143,7 @@ def level(p, nd, scratch):
                             h[ir - 1][ic - 1] *= p[13]
 
             # Transition frequencies and f-values
-          #  print (f'H before T and f calculation: {h}')
+            #print (f'H before T and f calculation: {h}')
 
             for j in range(1, ns + 1):
                 for k in range(1, n + 1):
@@ -413,6 +412,7 @@ def main():
     # If JS!=0: IS=JS and go back to call level function
 
     print(f"How many transitions: {ND}")
+    
  #   print(scratch)
     # Adjust F-values for circularly polarized light
     for i in range(IS):
