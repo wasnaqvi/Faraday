@@ -112,12 +112,12 @@ def level(p, nd, scratch):
 
         # Diagonalize the MJ + MI block
         nh,h=Matrix(nh, h, p, nl, nu)
-        print(f'H: {h}')
+       # print(f'H: {h}')
 
         d, u = jacobi_rotation(h)
         print(f'eigenvalues: {d}')
         print(f'eigenvectors: {u}')
-        print(f'H after diagonlization: {h}')
+       # print(f'H after diagonlization: {h}')
         if i != 1:
             # Transition matrix in the initial basis
             for j in range(nls, nus + 1):
@@ -144,7 +144,7 @@ def level(p, nd, scratch):
                             h[ir - 1][ic - 1] *= p[13]
 
             # Transition frequencies and f-values
-            print (f'H before T and f calculation: {h}')
+          #  print (f'H before T and f calculation: {h}')
 
             for j in range(1, ns + 1):
                 for k in range(1, n + 1):
@@ -413,7 +413,7 @@ def main():
     # If JS!=0: IS=JS and go back to call level function
 
     print(f"How many transitions: {ND}")
-    print(scratch)
+ #   print(scratch)
     # Adjust F-values for circularly polarized light
     for i in range(IS):
         C[i, 0] = 0.0
@@ -479,7 +479,7 @@ def main():
 
     Z[0] *= FAR
     Z[1] *= FAR
-    print(f"Frequency: {FQ}, Faraday: {Z[0] / 60.0}, Alpha: {Z[1] / 60.0}, Coeff: {Z[2]}")
+ #   print(f"Frequency: {FQ}, Faraday: {Z[0] / 60.0}, Alpha: {Z[1] / 60.0}, Coeff: {Z[2]}")
 
 
 if __name__ == "__main__":
