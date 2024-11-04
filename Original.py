@@ -321,7 +321,7 @@ def Matrix(NH, H, P, NL, NU):
             if QI[0] == 1 and QI[1] == QJ[1] and QI[1] == 1.5:
                 H[IR - 1, IC - 1] += (P[2] + P[3]) * W[2]
             if QI[0] == 1 and QI[1] == QJ[1] and QI[1] == 0.5:
-                H[IR - 1, IC - 1] += (P[2] +2*(BN-1)*P[3]) * W[2]
+                H[IR - 1, IC - 1] += (P[2] -P[3]) * W[2]
             if QI[0] == 1 and QI[1] != QJ[1]:
                 H[IR - 1, IC - 1] += P[2] * W[2]
 
